@@ -1,0 +1,25 @@
+:root {
+  --color-background: #fff;
+
+  --color-black: #232323;
+  --color-black-soft: #434242;
+
+  --color-primary-accent: #fed117;
+  --color-secondary-accent: #c1c1c1;
+
+  --color-border: #cecece;
+}
+
+/* @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background: var(--vt-c-black);
+      --color-background-soft: var(--vt-c-black-soft);
+      --color-background-mute: var(--vt-c-black-mute);
+  
+      --color-border: var(--vt-c-divider-dark-2);
+      --color-border-hover: var(--vt-c-divider-dark-1);
+  
+      --color-heading: var(--vt-c-text-dark-1);
+      --color-text: var(--vt-c-text-dark-2);
+    }
+  } */
