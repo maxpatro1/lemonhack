@@ -7,7 +7,8 @@ import { youtubeClient } from '../services/youtubeClient'
 import { useRouter } from 'vue-router'
 import { useVideoIdStore } from '../stores/videoId'
 import IconArrowRight from './icons/IconArrowRight.vue'
-// import { useArticleStore } from '../stores/article'
+import {baseClient} from "../services/baseClient";
+import { useArticleStore } from '../stores/article'
 
 const linkFormSchema = yup.object({
   link: yup
@@ -77,7 +78,7 @@ const { value: endTimeFieldValue } = useField('endTime')
 const { value: maxSymbolsFieldValue } = useField('maxSymbols')
 
 const router = useRouter()
-// const { setArticle } = useArticleStore()
+const { setArticle } = useArticleStore()
 
 const onVideoParamsFormCancel = () => {
   resetVideoParamsForm()
@@ -86,8 +87,8 @@ const onVideoParamsFormCancel = () => {
 const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
   console.log(values)
   try {
-    // const {data} = await baseClient.get(some params...)
-    // setArticle(data)
+    const {data} = await baseClient.get('/', {params: {url: 'https://www.youtube.com/watch?v=TpIrJmVwfBo'}})
+    setArticle(data)
     router.push('/article')
   } catch (error) {
     console.error(error)
