@@ -67,8 +67,10 @@ const handleTimeCodeClick = (timeCode) => {
           </button>
         </div>
         <div class="paragraph-text-container">
-          <h2 class="paragraph-title">{{ segment.text.split('\n')[0].replace('*', '') }}</h2>
-          <p class="paragraph-text">{{ segment.text.split('\n')[1] }}</p>
+          <h2 class="paragraph-title" contenteditable="true">
+            {{ segment.text.split('\n')[0].replace('*', '') }}
+          </h2>
+          <p class="paragraph-text" contenteditable="true">{{ segment.text.split('\n')[1] }}</p>
           <img :src="`/api/data/uuid/${segment.time[0]}.jpg`" alt="" class="paragraph-image" />
         </div>
       </div>
