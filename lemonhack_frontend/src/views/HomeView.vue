@@ -26,7 +26,6 @@ import VideoLinkForm from '../components/VideoLinkForm.vue'
 
 .content-container {
   position: relative;
-  height: 26rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,6 +33,7 @@ import VideoLinkForm from '../components/VideoLinkForm.vue'
 }
 
 .title {
+  margin-top: 3rem;
   margin-bottom: 1.5rem;
   font-size: 7rem;
   font-weight: 800;
