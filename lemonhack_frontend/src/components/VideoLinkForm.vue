@@ -3,6 +3,8 @@ import { useField, useForm } from 'vee-validate'
 import { ref } from 'vue'
 import * as yup from 'yup'
 import { youtubeClient } from '../services/youtubeClient'
+// import { baseClient } from '../services/baseClient'
+import { useRouter } from 'vue-router'
 import IconArrowRight from './icons/IconArrowRight.vue'
 
 const linkFormSchema = yup.object({
@@ -69,12 +71,20 @@ const { value: startTimeFieldValue } = useField('startTime')
 const { value: endTimeFieldValue } = useField('endTime')
 const { value: maxSymbolsFieldValue } = useField('maxSymbols')
 
+const router = useRouter()
+
 const onVideoParamsFormCancel = () => {
   resetVideoParamsForm()
   isLinkEntered.value = false
 }
-const onVideoParamsFormSubmit = handleVideoParamsFormSubmit((values) => {
+const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
   console.log(values)
+  try {
+    // const {data} = await baseClient.get(some params...)
+    router.push('/article')
+  } catch (error) {
+    console.error(error)
+  }
 })
 </script>
 
