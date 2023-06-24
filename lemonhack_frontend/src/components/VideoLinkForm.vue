@@ -35,11 +35,10 @@ const isLinkEntered = ref(false)
 const videoData = ref(null)
 
 const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
-  console.log(values)
   const { link } = values
   try {
     let videoId = ''
-    if (link.includes('&')) {
+    if (link.includes('?')) {
       videoId = link.split('&')[0].split('v=')[1]
     } else {
       const linkParts = link.split('?')[0].split('/')
@@ -50,7 +49,7 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
     })
     const { items } = data
     if (items.length === 0) {
-      setLinkFiledError('Неверная ссылка')
+      setLinkFiledError('Видео не найдено')
       return
     }
     setVideoId(videoId)
@@ -58,7 +57,7 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
     isLinkEntered.value = true
   } catch (error) {
     setLinkFiledError('Не удалось получить доступ к видео')
-    console.error(error)
+    console.error('Youtube error:', error)
   }
 })
 
@@ -88,11 +87,8 @@ const onVideoParamsFormCancel = () => {
 const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
   // console.log(values)
   const { link } = values
-  console.log('link:', link)
   try {
-    console.log('request start')
     const { data } = await baseClient.get('/', { params: { url: link } })
-    console.log('response data:', data)
     setArticle(data)
     router.push('/article')
   } catch (error) {
