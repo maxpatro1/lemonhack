@@ -1,9 +1,12 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 // import article from '../assets/article.json'
-import { useArticleStore } from '../stores/article';
+import { useArticleStore } from '../stores/article'
 
-const { article, setArticle } = useArticleStore()
+const store = useArticleStore()
+const { article } = storeToRefs(store)
+const { setArticle } = store
 
 const router = useRouter()
 
@@ -31,7 +34,7 @@ const handleVideoChange = () => {
       </div>
       <div v-for="(segment, index) in article.segments" :key="index" class="paragraph-container">
         <div class="paragraph-tip-container">
-          <p class="paragraph-tip">{{ Number(segment.time[segment.length()/2]).toFixed(2) }}</p>
+          <p class="paragraph-tip">{{ Number(segment.time[segment.length() / 2]).toFixed(2) }}</p>
           <p class="paragraph-tip">
             {{ Number(segment.time[segment.time.length - 1]).toFixed(2) }}
           </p>

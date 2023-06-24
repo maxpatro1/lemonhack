@@ -28,7 +28,8 @@ const {
   setErrors: setLinkFiledError
 } = useField('link')
 
-const { setVideoId } = useVideoIdStore()
+const videoIdStore = useVideoIdStore()
+const { setVideoId } = videoIdStore
 
 const isLinkEntered = ref(false)
 const videoData = ref(null)
@@ -77,7 +78,8 @@ const { value: endTimeFieldValue } = useField('endTime')
 const { value: maxSymbolsFieldValue } = useField('maxSymbols')
 
 const router = useRouter()
-const { setArticle } = useArticleStore()
+const articleStore = useArticleStore()
+const { setArticle } = articleStore
 
 const onVideoParamsFormCancel = () => {
   resetVideoParamsForm()
