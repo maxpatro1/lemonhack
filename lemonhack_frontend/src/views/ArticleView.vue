@@ -1,10 +1,14 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import article from '../assets/article.json'
+// import { useArticleStore } from '../stores/article';
+
+// const { article, setArticle } = useArticleStore()
 
 const router = useRouter()
 
 const handleVideoChange = () => {
+  // setArticle(null)
   router.push('/')
 }
 </script>
