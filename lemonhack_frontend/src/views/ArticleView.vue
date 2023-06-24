@@ -34,7 +34,7 @@ const handleVideoChange = () => {
       </div>
       <div v-for="(segment, index) in article.segments" :key="index" class="paragraph-container">
         <div class="paragraph-tip-container">
-          <p class="paragraph-tip">{{ Number(segment.time[segment.length() / 2]).toFixed(2) }}</p>
+          <p class="paragraph-tip">{{ Number(segment.time[0]).toFixed(2) }}</p>
           <p class="paragraph-tip">
             {{ Number(segment.time[segment.time.length - 1]).toFixed(2) }}
           </p>
@@ -42,6 +42,7 @@ const handleVideoChange = () => {
         <div class="paragraph-text-container">
           <h2 class="paragraph-title">{{ segment.text.split('\n')[0].replace('*', '') }}</h2>
           <p class="paragraph-text">{{ segment.text.split('\n')[1] }}</p>
+          <img :src="`/api/data/uuid/${segment.time[0]}.jpg`" alt="" class="paragraph-image" />
         </div>
       </div>
     </div>
@@ -128,7 +129,15 @@ const handleVideoChange = () => {
 }
 
 .paragraph-text {
+  margin-bottom: 1rem;
   font-size: 1.1rem;
   line-height: 1.1;
+}
+
+.paragraph-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
 }
 </style>
