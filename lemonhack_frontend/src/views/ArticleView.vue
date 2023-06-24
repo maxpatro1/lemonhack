@@ -1,25 +1,47 @@
 <script setup>
 import { storeToRefs } from 'pinia'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import YouTube from 'vue3-youtube'
 // import article from '../assets/article.json'
 import { useArticleStore } from '../stores/article'
+import { useVideoIdStore } from '../stores/videoId'
+
+const router = useRouter()
+
+const player = ref(null)
+
+const videoIdStore = useVideoIdStore()
+const { videoId } = storeToRefs(videoIdStore)
+
+onMounted(() => {
+  if (!videoId.value) {
+    router.push('/')
+  }
+})
 
 const store = useArticleStore()
 const { article } = storeToRefs(store)
 const { setArticle } = store
 
-const router = useRouter()
-
 const handleVideoChange = () => {
   setArticle(null)
   router.push('/')
+}
+
+const handleTimeCodeClick = (timeCode) => {
+  if (player.value) {
+    player.value.seekTo(timeCode, true)
+  }
 }
 </script>
 
 <template>
   <div class="content-container">
     <div class="video-container">
-      <div class="video"></div>
+      <div class="video">
+        <YouTube ref="player" :src="`https://www.youtube.com/watch?v=jfKfPfyJRdk`" />
+      </div>
       <button class="button" @click="handleVideoChange">Попробовать другое видео</button>
     </div>
     <div class="article-container">
@@ -34,10 +56,15 @@ const handleVideoChange = () => {
       </div>
       <div v-for="(segment, index) in article.segments" :key="index" class="paragraph-container">
         <div class="paragraph-tip-container">
-          <p class="paragraph-tip">{{ Number(segment.time[0]).toFixed(2) }}</p>
-          <p class="paragraph-tip">
+          <button class="paragraph-tip" @click="() => handleTimeCodeClick(segment.time[0])">
+            {{ Number(segment.time[0]).toFixed(2) }}
+          </button>
+          <button
+            class="paragraph-tip"
+            @click="() => handleTimeCodeClick(segment.time[segment.time.length - 1])"
+          >
             {{ Number(segment.time[segment.time.length - 1]).toFixed(2) }}
-          </p>
+          </button>
         </div>
         <div class="paragraph-text-container">
           <h2 class="paragraph-title">{{ segment.text.split('\n')[0].replace('*', '') }}</h2>
@@ -51,12 +78,15 @@ const handleVideoChange = () => {
 
 <style scoped>
 .content-container {
+  position: relative;
   padding: 5rem 0;
   display: flex;
   gap: 7rem;
 }
 
 .video-container {
+  position: sticky;
+  top: 1rem;
   flex-shrink: 0;
   flex-basis: 38rem;
   flex-grow: 0;
@@ -115,6 +145,14 @@ const handleVideoChange = () => {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-secondary-accent);
+}
+
+button.paragraph-tip {
+  transition: color 0.3s;
+}
+
+button.paragraph-tip:hover {
+  color: var(--color-primary-accent);
 }
 
 .paragraph-text-container {
