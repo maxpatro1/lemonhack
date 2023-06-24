@@ -40,7 +40,7 @@ const handleTimeCodeClick = (timeCode) => {
   <div class="content-container">
     <div class="video-container">
       <div class="video">
-        <YouTube ref="player" :src="`https://www.youtube.com/watch?v=jfKfPfyJRdk`" />
+        <YouTube ref="player" :src="`https://www.youtube.com/watch?v=${videoId}`" />
       </div>
       <button class="button" @click="handleVideoChange">Попробовать другое видео</button>
     </div>
