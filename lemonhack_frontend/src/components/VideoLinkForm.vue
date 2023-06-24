@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { youtubeClient } from '../services/youtubeClient'
 // import { baseClient } from '../services/baseClient'
 import { useRouter } from 'vue-router'
+import { useVideoIdStore } from '../stores/videoId'
 import IconArrowRight from './icons/IconArrowRight.vue'
 // import { useArticleStore } from '../stores/article'
 
@@ -26,6 +27,8 @@ const {
   errorMessage: linkFieldError,
   setErrors: setLinkFiledError
 } = useField('link')
+
+const { setVideoId } = useVideoIdStore()
 
 const isLinkEntered = ref(false)
 const videoData = ref(null)
@@ -49,6 +52,7 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
       setLinkFiledError('Неверная ссылка')
       return
     }
+    setVideoId(videoId)
     videoData.value = items[0]
     isLinkEntered.value = true
   } catch (error) {
