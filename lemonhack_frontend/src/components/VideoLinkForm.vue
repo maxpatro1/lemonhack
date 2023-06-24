@@ -1,14 +1,13 @@
 <script setup>
 import { useField, useForm } from 'vee-validate'
 import { ref } from 'vue'
-import * as yup from 'yup'
-import { youtubeClient } from '../services/youtubeClient'
-// import { baseClient } from '../services/baseClient'
 import { useRouter } from 'vue-router'
+import * as yup from 'yup'
+import { baseClient } from '../services/baseClient'
+import { youtubeClient } from '../services/youtubeClient'
+import { useArticleStore } from '../stores/article'
 import { useVideoIdStore } from '../stores/videoId'
 import IconArrowRight from './icons/IconArrowRight.vue'
-import {baseClient} from "../services/baseClient";
-import { useArticleStore } from '../stores/article'
 
 const linkFormSchema = yup.object({
   link: yup
@@ -57,7 +56,7 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
     videoData.value = items[0]
     isLinkEntered.value = true
   } catch (error) {
-    setLinkFiledError('Неверная ссылка')
+    setLinkFiledError('Не удалось получить доступ к видео')
     console.error(error)
   }
 })
@@ -85,13 +84,17 @@ const onVideoParamsFormCancel = () => {
   isLinkEntered.value = false
 }
 const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
-  console.log(values)
+  // console.log(values)
+  const { link } = values
+  console.log('link:', link)
   try {
-    const {data} = await baseClient.get('/', {params: {url: 'https://www.youtube.com/watch?v=TpIrJmVwfBo'}})
+    console.log('request start')
+    const { data } = await baseClient.get('/', { params: { url: link } })
+    console.log('response data:', data)
     setArticle(data)
     router.push('/article')
   } catch (error) {
-    console.error(error)
+    console.error('Server error:', error)
   }
 })
 </script>
