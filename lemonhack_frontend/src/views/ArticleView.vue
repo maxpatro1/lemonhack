@@ -3,9 +3,9 @@ import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import YouTube from 'vue3-youtube'
-// import article from '../assets/article.json'
 import { useArticleStore } from '../stores/article'
 import { useVideoIdStore } from '../stores/videoId'
+// import { baseClient } from '../services/baseClient'
 
 const router = useRouter()
 
@@ -34,6 +34,20 @@ const handleTimeCodeClick = (timeCode) => {
     player.value.seekTo(timeCode, true)
   }
 }
+
+const handleArticleSave = async () => {
+  try {
+    const updatedSegments = article.value.segments.map((segment, index) => {
+      const titleElement = document.querySelector(`#article-title-${index}`)
+      const textElement = document.querySelector(`#article-text-${index}`)
+      return { ...segment, text: `*${titleElement.innerText}\n${textElement.innerHTML}\n\n` }
+    })
+    console.log('updated article:', { ...article.value, segments: updatedSegments })
+    // await baseClient.put('/', {article: { ...article.value, segments: updatedSegments }})
+  } catch (error) {
+    console.error(error)
+  }
+}
 </script>
 
 <template>
@@ -43,6 +57,7 @@ const handleTimeCodeClick = (timeCode) => {
         <YouTube ref="player" :src="`https://www.youtube.com/watch?v=${videoId}`" />
       </div>
       <button class="button" @click="handleVideoChange">Попробовать другое видео</button>
+      <button class="save-button" @click="handleArticleSave">Сохранить изменения в статье</button>
     </div>
     <div class="article-container">
       <h1 class="title">{{ article.title }}</h1>
@@ -67,10 +82,12 @@ const handleTimeCodeClick = (timeCode) => {
           </button>
         </div>
         <div class="paragraph-text-container">
-          <h2 class="paragraph-title" contenteditable="true">
+          <h2 :id="`article-title-${index}`" class="paragraph-title" contenteditable="true">
             {{ segment.text.split('\n')[0].replace('*', '') }}
           </h2>
-          <p class="paragraph-text" contenteditable="true">{{ segment.text.split('\n')[1] }}</p>
+          <p :id="`article-text-${index}`" class="paragraph-text" contenteditable="true">
+            {{ segment.text.split('\n')[1] }}
+          </p>
           <img :src="`/api/data/uuid/${segment.time[0]}.jpg`" alt="" class="paragraph-image" />
         </div>
       </div>
@@ -103,6 +120,7 @@ const handleTimeCodeClick = (timeCode) => {
 
 .button {
   width: 100%;
+  margin-bottom: 1rem;
   padding: 0.3rem 2.1rem;
   font-size: 1.3rem;
   font-weight: 700;
@@ -110,6 +128,17 @@ const handleTimeCodeClick = (timeCode) => {
   border-radius: 9999px;
   color: var(--color-secondary-accent);
   background-color: transparent;
+}
+
+.save-button {
+  width: 100%;
+  padding: 0.3rem 2.1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  border: 2px solid var(--color-primary-accent);
+  border-radius: 9999px;
+  color: #fff;
+  background-color: var(--color-primary-accent);
 }
 
 .article-container {
