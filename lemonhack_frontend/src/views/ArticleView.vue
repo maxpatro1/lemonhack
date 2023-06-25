@@ -10,6 +10,8 @@ import { useVideoIdStore } from '../stores/videoId'
 const router = useRouter()
 
 const player = ref(null)
+const playerWidth = ref(640)
+const playerHeight = ref(360)
 
 const videoIdStore = useVideoIdStore()
 const { videoId } = storeToRefs(videoIdStore)
@@ -17,7 +19,10 @@ const { videoId } = storeToRefs(videoIdStore)
 onMounted(() => {
   if (!videoId.value) {
     router.push('/')
+    return
   }
+  playerWidth.value = Math.floor(window.innerWidth / 2.5)
+  playerHeight.value = Math.floor((playerWidth.value / 16) * 9)
 })
 
 const store = useArticleStore()
@@ -54,7 +59,12 @@ const handleArticleSave = async () => {
   <div class="content-container">
     <div class="video-container">
       <div class="video">
-        <YouTube ref="player" :src="`https://www.youtube.com/watch?v=${videoId}`" />
+        <YouTube
+          ref="player"
+          :src="`https://www.youtube.com/watch?v=${videoId}`"
+          :width="playerWidth"
+          :height="playerHeight"
+        />
       </div>
       <button class="button" @click="handleVideoChange">Попробовать другое видео</button>
       <button class="save-button" @click="handleArticleSave">Сохранить изменения в статье</button>
@@ -104,8 +114,6 @@ const handleArticleSave = async () => {
 }
 
 .video-container {
-  position: sticky;
-  top: 1rem;
   flex-shrink: 0;
   flex-basis: 38rem;
   flex-grow: 0;
