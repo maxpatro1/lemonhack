@@ -32,6 +32,7 @@ const videoIdStore = useVideoIdStore()
 const { setVideoId } = videoIdStore
 
 const isLinkEntered = ref(false)
+const enteredLink = ref('')
 const videoData = ref(null)
 
 const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
@@ -54,6 +55,7 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
     }
     setVideoId(videoId)
     videoData.value = items[0]
+    enteredLink.value = `https://www.youtube.com/watch?v=${videoId}`
     isLinkEntered.value = true
   } catch (error) {
     setLinkFiledError('Не удалось получить доступ к видео')
@@ -61,7 +63,11 @@ const onLinkFormSubmit = handleLinkFormSubmit(async (values) => {
   }
 })
 
-const { handleSubmit: handleVideoParamsFormSubmit, resetForm: resetVideoParamsForm } = useForm({
+const {
+  handleSubmit: handleVideoParamsFormSubmit,
+  isSubmitting: isVideoParamsFormSubmitting,
+  resetForm: resetVideoParamsForm
+} = useForm({
   validationSchema: yup.object({
     startTime: yup.string(),
     endTime: yup.string(),
@@ -84,11 +90,13 @@ const onVideoParamsFormCancel = () => {
   resetVideoParamsForm()
   isLinkEntered.value = false
 }
+
 const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
-  // console.log(values)
-  const { link } = values
+  const { startTime, endTime, maxSymbols } = values
   try {
-    const { data } = await baseClient.get('/', { params: { url: link } })
+    const { data } = await baseClient.get('/', {
+      params: { url: enteredLink, startTime, endTime, maxSymbols }
+    })
     setArticle(data)
     router.push('/article')
   } catch (error) {
@@ -168,6 +176,12 @@ const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
         </button>
         <button type="submit" form="video-params-form" class="submit-button-with-text">Пуск</button>
       </div>
+    </div>
+  </div>
+
+  <div v-if="isVideoParamsFormSubmitting" class="modal-background">
+    <div class="modal">
+      <img src="/images/loader.gif" alt="" class="loader" />
     </div>
   </div>
 </template>
@@ -299,5 +313,31 @@ const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
   border-radius: 9999px;
   color: white;
   background-color: var(--color-primary-accent);
+}
+
+.modal-background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  place-content: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.modal {
+  position: absolute;
+  left: auto;
+  right: auto;
+  bottom: 8rem;
+  width: 28rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: var(--color-background);
+}
+
+.loader {
+  width: 100%;
 }
 </style>

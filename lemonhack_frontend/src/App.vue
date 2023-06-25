@@ -20,8 +20,6 @@ import IconLogo from './components/icons/IconLogo.vue'
 
 <style scoped>
 .header {
-  position: relative;
-  z-index: 10;
   padding: 1rem 3rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);

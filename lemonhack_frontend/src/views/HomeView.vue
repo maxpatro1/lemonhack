@@ -19,13 +19,13 @@ import VideoLinkForm from '../components/VideoLinkForm.vue'
   position: absolute;
   top: 0;
   left: 0;
+  z-index: -1;
   width: 100%;
   height: 100vh;
   overflow: hidden;
 }
 
 .content-container {
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
