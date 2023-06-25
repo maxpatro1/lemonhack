@@ -53,4 +53,11 @@ import IconLogo from './components/icons/IconLogo.vue'
   flex-grow: 1;
   padding: 1rem 3rem;
 }
+
+@media screen and (min-width: 1536px) {
+  .main {
+    max-width: 1536px;
+    margin: 0 auto;
+  }
+}
 </style>
