@@ -92,10 +92,11 @@ const onVideoParamsFormCancel = () => {
 }
 
 const onVideoParamsFormSubmit = handleVideoParamsFormSubmit(async (values) => {
+  console.log(enteredLink.value)
   const { startTime, endTime, maxSymbols } = values
   try {
     const { data } = await baseClient.get('/', {
-      params: { url: enteredLink, startTime, endTime, maxSymbols }
+      params: { url: enteredLink.value, start_time: startTime, end_time: endTime, max_symbols: maxSymbols }
     })
     setArticle(data)
     router.push('/article')

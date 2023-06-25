@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import YouTube from 'vue3-youtube'
 import { useArticleStore } from '../stores/article'
 import { useVideoIdStore } from '../stores/videoId'
+import {baseClient} from "../services/baseClient";
 // import { baseClient } from '../services/baseClient'
 
 const router = useRouter()
@@ -28,7 +29,11 @@ onMounted(() => {
 const store = useArticleStore()
 const { article } = storeToRefs(store)
 const { setArticle } = store
-
+const getImageUrl = (uuid, name) => {
+  console.log(uuid, name)
+  // return new URL(`../../../../it-zavod-hack/backend/data/1.jpg`, import.meta.url).href
+  return new URL(`../../public/${name}`, import.meta.url).href
+}
 const handleVideoChange = () => {
   setArticle(null)
   router.push('/')
@@ -42,13 +47,13 @@ const handleTimeCodeClick = (timeCode) => {
 
 const handleArticleSave = async () => {
   try {
-    const updatedSegments = article.value.segments.map((segment, index) => {
+    const updatedSegments = article.value.data.segments.map((segment, index) => {
       const titleElement = document.querySelector(`#article-title-${index}`)
       const textElement = document.querySelector(`#article-text-${index}`)
       return { ...segment, text: `*${titleElement.innerText}\n${textElement.innerHTML}\n\n` }
     })
-    console.log('updated article:', { ...article.value, segments: updatedSegments })
-    // await baseClient.put('/', {article: { ...article.value, segments: updatedSegments }})
+    console.log(article.value.url)
+    await baseClient.post(`/${article.value.url}`, {article: { ...article.value.data, segments: updatedSegments }})
   } catch (error) {
     console.error(error)
   }
@@ -70,16 +75,16 @@ const handleArticleSave = async () => {
       <button class="save-button" @click="handleArticleSave">Сохранить изменения в статье</button>
     </div>
     <div class="article-container">
-      <h1 class="title">{{ article.title }}</h1>
+      <h1 class="title">{{ article.data.title }}</h1>
       <div class="paragraph-container">
         <div class="paragraph-tip-container">
           <p class="paragraph-tip">Annotation:</p>
         </div>
         <div class="paragraph-text-container">
-          <p class="paragraph-text">{{ article.annotation }}</p>
+          <p class="paragraph-text">{{ article.data.annotation }}</p>
         </div>
       </div>
-      <div v-for="(segment, index) in article.segments" :key="index" class="paragraph-container">
+      <div v-for="(segment, index) in article.data.segments" :key="index" class="paragraph-container">
         <div class="paragraph-tip-container">
           <button class="paragraph-tip" @click="() => handleTimeCodeClick(segment.time[0])">
             {{ Number(segment.time[0]).toFixed(2) }}
@@ -98,7 +103,7 @@ const handleArticleSave = async () => {
           <p :id="`article-text-${index}`" class="paragraph-text" contenteditable="true">
             {{ segment.text.split('\n')[1] }}
           </p>
-          <img :src="`/api/data/uuid/${segment.time[0]}.jpg`" alt="" class="paragraph-image" />
+          <img :src="getImageUrl(article.data.uuid, segment.img[Math.floor(segment.img.length / 2)])" alt="" class="paragraph-image" />
         </div>
       </div>
     </div>
@@ -128,7 +133,6 @@ const handleArticleSave = async () => {
 
 .button {
   width: 100%;
-  margin-bottom: 1rem;
   padding: 0.3rem 2.1rem;
   font-size: 1.3rem;
   font-weight: 700;
@@ -136,17 +140,6 @@ const handleArticleSave = async () => {
   border-radius: 9999px;
   color: var(--color-secondary-accent);
   background-color: transparent;
-}
-
-.save-button {
-  width: 100%;
-  padding: 0.3rem 2.1rem;
-  font-size: 1.3rem;
-  font-weight: 700;
-  border: 2px solid var(--color-primary-accent);
-  border-radius: 9999px;
-  color: #fff;
-  background-color: var(--color-primary-accent);
 }
 
 .article-container {
